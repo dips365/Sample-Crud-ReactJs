@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "sample-crud-reactjs-client-side-solution",
+    "id": "684def3f-e30e-4ebb-a300-bd2d8af411b2",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false
+  },
+  "paths": {
+    "zippedPackage": "solution/sample-crud-reactjs.sppkg"
+  }
+}
