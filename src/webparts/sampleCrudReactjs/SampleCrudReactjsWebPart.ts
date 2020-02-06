@@ -4,7 +4,8 @@ import { Version } from '@microsoft/sp-core-library';
 import {
   BaseClientSideWebPart,
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
+  PropertyPaneLabel
 } from '@microsoft/sp-webpart-base';
 
 import * as strings from 'SampleCrudReactjsWebPartStrings';
@@ -13,6 +14,7 @@ import { ISampleCrudReactjsProps } from './components/ISampleCrudReactjsProps';
 
 export interface ISampleCrudReactjsWebPartProps {
   description: string;
+  ListName:string;
 }
 
 export default class SampleCrudReactjsWebPart extends BaseClientSideWebPart<ISampleCrudReactjsWebPartProps> {
@@ -21,7 +23,10 @@ export default class SampleCrudReactjsWebPart extends BaseClientSideWebPart<ISam
     const element: React.ReactElement<ISampleCrudReactjsProps > = React.createElement(
       SampleCrudReactjs,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        ListName:this.properties.ListName,
+        spHttpClient:this.context.spHttpClient,
+        siteURL:this.context.pageContext.site.absoluteUrl
       }
     );
 
@@ -49,6 +54,12 @@ export default class SampleCrudReactjsWebPart extends BaseClientSideWebPart<ISam
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyPaneLabel('ListLable',{
+                  text:"List Name"
+                }),
+                PropertyPaneTextField('ListName',{
+                  label:strings.ListNameFieldLabel
                 })
               ]
             }
