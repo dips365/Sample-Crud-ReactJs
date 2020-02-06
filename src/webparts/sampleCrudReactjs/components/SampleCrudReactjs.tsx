@@ -180,6 +180,82 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
 
   private EditItem() {
     alert("Edit Button clicked!!");
+
+    if(Environment.type === EnvironmentType.SharePoint){
+      this.setState({
+        status: 'Loading latest items...',
+        items: []
+      });
+  
+      let latestItemId: number = undefined;
+  
+      this.getLatestItemId()
+        .then((itemId: number): Promise<SPHttpClientResponse> => {
+          if (itemId === -1) {
+            throw new Error('No items found in the list');
+          }
+  
+          latestItemId = itemId;
+          this.setState({
+            status: `Loading information about item ID: ${latestItemId}...`,
+            items: []
+          });
+          
+          return this.props.spHttpClient.get(`${this.props.siteURL}/_api/web/lists/getbytitle('${this.props.ListName}')/items(${latestItemId})?$select=Title,Id`,
+            SPHttpClient.configurations.v1,
+            {
+              headers: {
+                'Accept': 'application/json;odata=nometadata',
+                'odata-version': ''
+              }
+            });
+        })
+        .then((response: SPHttpClientResponse): Promise<IListItem> => {
+          return response.json();
+        })
+        .then((item: IListItem): void => {
+          this.setState({
+            status: 'Loading latest items...',
+            items: []
+          });
+  
+          const body: string = JSON.stringify({
+            'Title': `Updated Item ${new Date()}`
+          });
+  
+          this.props.spHttpClient.post(`${this.props.siteURL}/_api/web/lists/getbytitle('${this.props.ListName}')/items(${item.ID})`,
+            SPHttpClient.configurations.v1,
+            {
+              headers: {
+                'Accept': 'application/json;odata=nometadata',
+                'Content-type': 'application/json;odata=nometadata',
+                'odata-version': '',
+                'IF-MATCH': '*',
+                'X-HTTP-Method': 'MERGE'
+              },
+              body: body
+            })
+            .then((response: SPHttpClientResponse): void => {
+              this.setState({
+                status: `Item with ID: ${latestItemId} successfully updated`,
+                items: []
+              });
+            }, (error: any): void => {
+              this.setState({
+                status: `Error updating item: ${error}`,
+                items: []
+              });
+            });
+        });
+    }
+    else
+    {
+      this.setState({
+        status:"Please connect to SharePoint Online enviornment.You are running in local server",
+        items:[]
+      });
+    }
+
   }
   private DeleteItem() {
     alert("Delete Button clicked!!");
