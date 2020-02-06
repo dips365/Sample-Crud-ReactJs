@@ -8,7 +8,7 @@ import { SPHttpClient,SPHttpClientResponse } from "@microsoft/sp-http";
 import { IListItem } from './IListItem';
 
 export default class SampleCrudReactjs extends React.Component<ISampleCrudReactjsProps, ISampleCrudReactjsStates> {
-  
+
 
   constructor(props:ISampleCrudReactjsProps,states:ISampleCrudReactjsStates){
     super(props);
@@ -17,7 +17,7 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
       items:[]
     };
   }
-  
+
   public render(): React.ReactElement<ISampleCrudReactjsProps> {
 
     const items:JSX.Element[] = this.state.items.map((item:IListItem,i:number):JSX.Element=>{
@@ -87,13 +87,13 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
         status:"Creating new item.....",
         items:[]
       });
-  
+
       const body:string = JSON.stringify({
         'Title' : `Item ${new Date()}`
       });
-  
+
       // Add Post call of rest API to Add item in List
-  
+
       this.props.spHttpClient.post(
       `${this.props.siteURL}/_api/web/lists/getbytitle('${this.props.ListName}')/items`,
       SPHttpClient.configurations.v1,
@@ -125,7 +125,7 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
          items:[]
        });
     }
-    
+
  }
 
   private GetItems(){
@@ -186,23 +186,23 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
         status: 'Loading latest items...',
         items: []
       });
-  
+
       let latestItemId: number = undefined;
-  
+
       this.getLatestItemId()
         .then((itemId: number): Promise<SPHttpClientResponse> => {
           if (itemId === -1) {
             throw new Error('No items found in the list');
           }
-  
+
           latestItemId = itemId;
           this.setState({
             status: `Loading information about item ID: ${latestItemId}...`,
             items: []
           });
-          
+
           return this.props.spHttpClient.get(`${this.props.siteURL}/_api/web/lists/getbytitle('${this.props.ListName}')/items(${latestItemId})?$select=Title,Id`,
-            SPHttpClient.configurations.v1,
+           SPHttpClient.configurations.v1,
             {
               headers: {
                 'Accept': 'application/json;odata=nometadata',
@@ -218,11 +218,11 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
             status: 'Loading latest items...',
             items: []
           });
-  
+
           const body: string = JSON.stringify({
             'Title': `Updated Item ${new Date()}`
           });
-  
+
           this.props.spHttpClient.post(`${this.props.siteURL}/_api/web/lists/getbytitle('${this.props.ListName}')/items(${item.ID})`,
             SPHttpClient.configurations.v1,
             {
@@ -259,6 +259,84 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
   }
   private DeleteItem() {
     alert("Delete Button clicked!!");
+    if(Environment.type === EnvironmentType.SharePoint){
+      if(!window.confirm("Are you sure want to delete this item?")){
+        return;
+      }
+      else
+      {
+        this.setState({
+          status: 'Loading latest items...',
+          items: []
+        });
+
+        let latestItemId:number = undefined;
+        let etag:string = undefined;
+
+
+        this.getLatestItemId().then((itemId:number):Promise<SPHttpClientResponse>=>{
+          if(itemId === -1){
+            throw new Error("'No items found in the list");
+          }
+
+          latestItemId = itemId;
+
+          this.setState({
+            status:`Loading information about item id : ${latestItemId}`,
+            items:[]
+          });
+
+          return this.props.spHttpClient.get(
+            `${this.props.siteURL}/_api/web/lists/getbytitle('${this.props.ListName}')/items
+            ('${latestItemId}')?$select=Id,Title`,
+            SPHttpClient.configurations.v1,
+          {
+            headers: {
+              'Accept': 'application/json;odata=nometadata',
+              'odata-version': ''
+            }
+          })
+        }).then((response:SPHttpClientResponse):Promise<IListItem>=>{
+          etag = response.headers.get('ETag');
+          return response.json();
+        }).then((item:IListItem):Promise<SPHttpClientResponse>=>{
+          this.setState({
+            status:`Deleting item with id : ${latestItemId}`,
+            items:[]
+           });
+
+           return this.props.spHttpClient.post(
+             `${this.props.siteURL}/_api/web/lists/getbytitle('${this.props.ListName}')/items(${item.ID})`,
+             SPHttpClient.configurations.v1,
+             {
+               headers:{
+                'Accept': 'application/json;odata=nometadata',
+                'Content-type': 'application/json;odata=nometadata',
+                'odata-version': '',
+                'IF-MATCH': etag,
+                'X-HTTP-Method': 'DELETE'
+               }
+             })
+        }).then((response:SPHttpClientResponse):void=>{
+          this.setState({
+            status: `Item with ID: ${latestItemId} successfully deleted`,
+            items: []
+          });
+        },(error:any):void=>{
+          this.setState({
+            status: `Error Deleting item: ${error}`,
+            items: []
+          });
+        })
+      }
+    }
+    else
+    {
+      this.setState({
+        status:"Please connect to SharePoint Online enviornment.You are running in local server",
+        items:[]
+      });
+    }
   }
 
   // get latest Item from the List
