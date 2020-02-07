@@ -295,7 +295,7 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
               'Accept': 'application/json;odata=nometadata',
               'odata-version': ''
             }
-          })
+          });
         }).then((response:SPHttpClientResponse):Promise<IListItem>=>{
           etag = response.headers.get('ETag');
           return response.json();
@@ -316,7 +316,7 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
                 'IF-MATCH': etag,
                 'X-HTTP-Method': 'DELETE'
                }
-             })
+             });
         }).then((response:SPHttpClientResponse):void=>{
           this.setState({
             status: `Item with ID: ${latestItemId} successfully deleted`,
@@ -327,7 +327,7 @@ export default class SampleCrudReactjs extends React.Component<ISampleCrudReactj
             status: `Error Deleting item: ${error}`,
             items: []
           });
-        })
+        });
       }
     }
     else

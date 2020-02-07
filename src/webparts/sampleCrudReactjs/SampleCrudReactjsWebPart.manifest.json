@@ -19,9 +19,10 @@
     "group": { "default": "Other" },
     "title": { "default": "sample-crud-reactjs" },
     "description": { "default": "Sample CRUD operations using React JS" },
-    "officeFabricIconFontName": "Page",
+    "officeFabricIconFontName": "D365TalentLearn",
     "properties": {
-      "description": "sample-crud-reactjs"
+      "description": "sample-crud-reactjs",
+      "ListName":"FAQ"
     }
   }]
 }
