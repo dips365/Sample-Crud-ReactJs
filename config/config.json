@@ -9,14 +9,6 @@
           "manifest": "./src/webparts/sampleCrudReactjs/SampleCrudReactjsWebPart.manifest.json"
         }
       ]
-    },
-    "sub-scribe-to-library-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/subScribeToLibrary/SubScribeToLibraryWebPart.js",
-          "manifest": "./src/webparts/subScribeToLibrary/SubScribeToLibraryWebPart.manifest.json"
-        }
-      ]
     }
   },
   "externals": {},
