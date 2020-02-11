@@ -22,6 +22,5 @@
   "externals": {},
   "localizedResources": {
     "SampleCrudReactjsWebPartStrings": "lib/webparts/sampleCrudReactjs/loc/{locale}.js",
-    "SubScribeToLibraryWebPartStrings": "lib/webparts/subScribeToLibrary/loc/{locale}.js"
   }
 }
