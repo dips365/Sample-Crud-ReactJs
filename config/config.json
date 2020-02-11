@@ -13,6 +13,6 @@
   },
   "externals": {},
   "localizedResources": {
-    "SampleCrudReactjsWebPartStrings": "lib/webparts/sampleCrudReactjs/loc/{locale}.js",
+    "SampleCrudReactjsWebPartStrings": "lib/webparts/sampleCrudReactjs/loc/{locale}.js"
   }
 }
