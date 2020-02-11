@@ -9,10 +9,19 @@
           "manifest": "./src/webparts/sampleCrudReactjs/SampleCrudReactjsWebPart.manifest.json"
         }
       ]
+    },
+    "sub-scribe-to-library-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/subScribeToLibrary/SubScribeToLibraryWebPart.js",
+          "manifest": "./src/webparts/subScribeToLibrary/SubScribeToLibraryWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
-    "SampleCrudReactjsWebPartStrings": "lib/webparts/sampleCrudReactjs/loc/{locale}.js"
+    "SampleCrudReactjsWebPartStrings": "lib/webparts/sampleCrudReactjs/loc/{locale}.js",
+    "SubScribeToLibraryWebPartStrings": "lib/webparts/subScribeToLibrary/loc/{locale}.js"
   }
 }
